@@ -1,12 +1,13 @@
 import WebSocket from "ws";
-import type { ResolvedQQBotAccount, WSPayload, C2CMessageEvent, GuildMessageEvent } from "./types.js";
-import { getAccessToken, getGatewayUrl, sendC2CMessage, sendChannelMessage } from "./api.js";
+import type { ResolvedQQBotAccount, WSPayload, C2CMessageEvent, GuildMessageEvent, GroupMessageEvent } from "./types.js";
+import { getAccessToken, getGatewayUrl, sendC2CMessage, sendChannelMessage, sendGroupMessage } from "./api.js";
 import { getQQBotRuntime } from "./runtime.js";
 
 // QQ Bot intents
 const INTENTS = {
-  PUBLIC_GUILD_MESSAGES: 1 << 30,
-  DIRECT_MESSAGE: 1 << 25,
+  PUBLIC_GUILD_MESSAGES: 1 << 30,  // 频道公开消息
+  DIRECT_MESSAGE: 1 << 12,         // 频道私信
+  GROUP_AND_C2C: 1 << 25,          // 群聊和 C2C 私聊
 };
 
 export interface GatewayContext {
@@ -56,7 +57,7 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
 
   // 处理收到的消息
   const handleMessage = async (event: {
-    type: "c2c" | "guild" | "dm";
+    type: "c2c" | "guild" | "dm" | "group";
     senderId: string;
     senderName?: string;
     content: string;
@@ -64,6 +65,7 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
     timestamp: string;
     channelId?: string;
     guildId?: string;
+    groupOpenid?: string;
   }) => {
     log?.info(`[qqbot:${account.accountId}] Processing message from ${event.senderId}: ${event.content}`);
 
@@ -73,8 +75,10 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
       direction: "inbound",
     });
 
-    const isGroup = event.type === "guild";
-    const peerId = isGroup ? `channel:${event.channelId}` : event.senderId;
+    const isGroup = event.type === "guild" || event.type === "group";
+    const peerId = event.type === "guild" ? `channel:${event.channelId}` 
+                 : event.type === "group" ? `group:${event.groupOpenid}`
+                 : event.senderId;
 
     const route = pluginRuntime.channel.routing.resolveAgentRoute({
       cfg,
@@ -101,9 +105,9 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
       envelope: envelopeOptions,
     });
 
-    const fromAddress = isGroup
-      ? `qqbot:channel:${event.channelId}`
-      : `qqbot:${event.senderId}`;
+    const fromAddress = event.type === "guild" ? `qqbot:channel:${event.channelId}`
+                       : event.type === "group" ? `qqbot:group:${event.groupOpenid}`
+                       : `qqbot:${event.senderId}`;
     const toAddress = fromAddress;
 
     const ctxPayload = pluginRuntime.channel.reply.finalizeInboundContext({
@@ -126,6 +130,7 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
       // QQBot 特有字段
       QQChannelId: event.channelId,
       QQGuildId: event.guildId,
+      QQGroupOpenid: event.groupOpenid,
     });
 
     // 分发到 AI 系统
@@ -144,6 +149,8 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
             try {
               if (event.type === "c2c") {
                 await sendC2CMessage(accessToken, event.senderId, replyText, event.messageId);
+              } else if (event.type === "group" && event.groupOpenid) {
+                await sendGroupMessage(accessToken, event.groupOpenid, replyText, event.messageId);
               } else if (event.channelId) {
                 await sendChannelMessage(accessToken, event.channelId, replyText, event.messageId);
               }
@@ -191,7 +198,7 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
               op: 2,
               d: {
                 token: `QQBot ${accessToken}`,
-                intents: INTENTS.PUBLIC_GUILD_MESSAGES | INTENTS.DIRECT_MESSAGE,
+                intents: INTENTS.PUBLIC_GUILD_MESSAGES | INTENTS.DIRECT_MESSAGE | INTENTS.GROUP_AND_C2C,
                 shard: [0, 1],
               },
             })
@@ -238,6 +245,16 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
               messageId: event.id,
               timestamp: event.timestamp,
               guildId: event.guild_id,
+            });
+          } else if (t === "GROUP_AT_MESSAGE_CREATE") {
+            const event = d as GroupMessageEvent;
+            await handleMessage({
+              type: "group",
+              senderId: event.author.member_openid,
+              content: event.content,
+              messageId: event.id,
+              timestamp: event.timestamp,
+              groupOpenid: event.group_openid,
             });
           }
           break;

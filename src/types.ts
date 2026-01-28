@@ -71,6 +71,21 @@ export interface GuildMessageEvent {
 }
 
 /**
+ * 群聊 AT 消息事件
+ */
+export interface GroupMessageEvent {
+  author: {
+    id: string;
+    member_openid: string;
+  };
+  content: string;
+  id: string;
+  timestamp: string;
+  group_id: string;
+  group_openid: string;
+}
+
+/**
  * WebSocket 事件负载
  */
 export interface WSPayload {

@@ -114,3 +114,19 @@ export async function sendChannelMessage(
     ...(msgId ? { msg_id: msgId } : {}),
   });
 }
+
+/**
+ * 发送群聊消息
+ */
+export async function sendGroupMessage(
+  accessToken: string,
+  groupOpenid: string,
+  content: string,
+  msgId?: string
+): Promise<{ id: string; timestamp: string }> {
+  return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/messages`, {
+    content,
+    msg_type: 0,
+    ...(msgId ? { msg_id: msgId } : {}),
+  });
+}
