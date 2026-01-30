@@ -367,7 +367,7 @@ export async function startGateway(ctx: GatewayContext): Promise<void> {
             }
             if (!hasResponse) {
               log?.error(`[qqbot:${account.accountId}] No response within timeout`);
-              await sendErrorMessage("[ClawdBot] 未收到响应，请检查大模型 API Key 是否正确配置");
+              await sendErrorMessage("[ClawdBot] QQ响应正常，但未收到clawdbot响应，请检查大模型是否正确配置");
             }
           }
         } catch (err) {
