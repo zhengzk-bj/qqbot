@@ -341,26 +341,34 @@ export function saveImage(
  */
 export function saveImageFromPath(filePath: string, ttlSeconds?: number): string | null {
   try {
+    console.log(`[image-server] saveImageFromPath: ${filePath}`);
+    
     // 检查文件是否存在
     if (!fs.existsSync(filePath)) {
+      console.log(`[image-server] File not found: ${filePath}`);
       return null;
     }
 
     // 读取文件
     const buffer = fs.readFileSync(filePath);
+    console.log(`[image-server] File size: ${buffer.length}`);
     
     // 根据扩展名获取 MIME 类型
     const ext = path.extname(filePath).toLowerCase().replace(".", "");
+    console.log(`[image-server] Extension: "${ext}"`);
     const mimeType = getMimeType(ext);
+    console.log(`[image-server] MIME type: ${mimeType}`);
     
     // 只处理图片文件
     if (!mimeType.startsWith("image/")) {
+      console.log(`[image-server] Not an image file`);
       return null;
     }
 
     // 使用 saveImage 保存
     return saveImage(buffer, mimeType, ttlSeconds);
-  } catch {
+  } catch (err) {
+    console.error(`[image-server] saveImageFromPath error:`, err);
     return null;
   }
 }
