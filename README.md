@@ -17,7 +17,11 @@ QQ 开放平台Bot API 的 Moltbot 渠道插件，支持 C2C 私聊、群聊 @�
 <img width="1902" height="448" alt="Clipboard_Screenshot_1769739939" src="https://github.com/user-attachments/assets/d6f37458-900c-4de9-8fdc-f8e6bf5c7ee5" />
 
 ### 1.3.0（即将更新）
-- 支持更加丰富的富文本消息
+- 支持回复图片等功能
+
+### 1.2.2
+- 支持发送文件
+- 支持openclaw、moltbot命令行
 - 修复[health]检查提示: [health] refresh failed: Cannot read properties of undefined (reading 'appId')的问题（不影响使用）
 - 修复文件发送后clawdbot无法读取的问题
 
