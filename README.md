@@ -25,6 +25,7 @@ QQ 开放平台Bot API 的 Moltbot 渠道插件，支持 C2C 私聊、群聊 @�
    <img width="1440" height="412" alt="Clipboard_Screenshot_1770091969" src="https://github.com/user-attachments/assets/47835c4b-ccd2-4782-aaa6-b873cb58f7d7" />
 - 提供主动推送能力（目前AI还不知道怎么调用主动推送，相关完整Skill能力将在后续版本更新）
 - 优化一些已知问题
+- 优化未收到未收到大模型响应时的提示信息
 
 
 ### 1.2.2
