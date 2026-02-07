@@ -1,261 +1,125 @@
-<div align="center">
+# QQ
 
-# QQ Bot Channel Plugin for Openclaw(Clawdbot/Moltbot)
+QQ is a widely-used instant messaging platform that provides various communication capabilities such as text, voice, images, and files. It supports collaborative scenarios like group chats and channels, making it suitable for both personal communication and team collaboration.
 
-QQ 开放平台 Bot API 的 Openclaw 渠道插件，支持 C2C 私聊、群聊 @消息、频道消息。
+This integration method connects OpenClaw with a QQ Bot. It utilizes the platform's long-connection event subscription mechanism to receive message and event callbacks, enabling stable and secure message exchange and automation capability integration without exposing a public webhook address.
 
-[![npm version](https://img.shields.io/badge/npm-v1.4.1-blue)](https://www.npmjs.com/package/@sliverp/qqbot)
-[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
-[![QQ Bot](https://img.shields.io/badge/QQ_Bot-API_v2-red)](https://bot.q.qq.com/wiki/)
-[![Platform](https://img.shields.io/badge/platform-Openclaw-orange)](https://github.com/sliverp/openclaw)
-[![Node.js](https://img.shields.io/badge/Node.js->=18-339933)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)](https://www.typescriptlang.org/)
+# Step 1: Install the QQ Bot Plugin
 
-</div>
+Install via the OpenClaw plugins command.
 
-
----
-
-## 📸 使用示例
-<div align="center">
-<img width="400" alt="使用示例" src="https://github.com/user-attachments/assets/6f1704ab-584b-497e-8937-96f84ce2958f" />
-<img width="670" height="396" alt="Clipboard_Screenshot_1770366319" src="https://github.com/user-attachments/assets/e21e9292-fb93-41a7-81fe-39eeefe3b01d" />
-
-</div>
-
----
-
-## ✨ 功能特性
-
-- 🔒 **多场景支持** - C2C 私聊、群聊 @消息、频道消息、频道私信
-- 🖼️ **富媒体消息** - 支持图片收发、文件发送
-- ⏰ **定时推送** - 支持定时任务到时后主动推送
-- 🔗 **URL 无限制** - 私聊可直接发送 URL
-- ⌨️ **输入状态** - Bot 正在输入中状态提示
-- 🔄 **热更新** - 支持 npm 方式安装和热更新
-- 📝 **Markdown** - 支持 Markdown 格式
-- 📝 **Command** - 支持Openclaw原生命令
-
-  
----
-
-## ⭐ Star 趋势
-<div align="center">
-<img width="666" height="464" alt="star-history-202626 (1)" src="https://github.com/user-attachments/assets/01d123b4-f2a7-45b9-b2ed-b7a344497b4a" />
-
-
-
-</div>
-
----
-
-## 📦 安装
-
-### 方式一：腾讯云 Lighthouse 镜像（最简单）
-
-[![Lighthouse](https://img.shields.io/badge/腾讯云-Lighthouse_镜像-00A4FF)](https://cloud.tencent.com/product/lighthouse)
-
-直接使用预装好的腾讯云 Lighthouse 镜像，开箱即用，无需手动安装配置。
-
-### 方式二：npm 安装（推荐）
-
-```bash
+```
 openclaw plugins install @sliverp/qqbot@latest
 ```
 
-### 方式三：源码安装
+Install from source code:
 
-```bash
+```
 git clone https://github.com/sliverp/qqbot.git && cd qqbot
-clawdbot plugins install .
+openclaw plugins install .
 ```
 
-> 💡 安装过程需要一些时间，尤其是小内存机器，请耐心等待
+# Step 2: Create a QQ Bot
 
----
+## 1. Register on the QQ Open Platform
 
-## ⚙️ 配置
+Go to the official website of the Tencent QQ Open Platform. You cannot log in directly with your personal QQ account by default; you need to register a new QQ Open Platform account.
+<img width="2140" height="1004" alt="1" src="https://github.com/user-attachments/assets/d76a780c-5040-43fb-ac41-5808f975ae4b" />
 
-### 1. 获取 QQ 机器人凭证
+After the initial registration, follow the platform's instructions to set up a super administrator.
 
-1. 访问 [QQ 开放平台](https://q.qq.com/)
-2. 创建机器人应用
-3. 获取 `AppID` 和 `AppSecret`（ClientSecret）
-4. Token 格式：`AppID:AppSecret`
+<img width="2556" height="1744" alt="2" src="https://github.com/user-attachments/assets/ad0a54d5-6997-4f52-ae8f-bea71aa11c30" />
+After successfully scanning the QR code with your mobile QQ, proceed to the next step to fill in the relevant entity information.
 
-### 2. 添加配置
+Using "Individual" as an example here, follow the prompts to enter your name, ID number, phone number, and verification code, then click continue to proceed to the facial recognition step.
+<img width="2544" height="1744" alt="3" src="https://github.com/user-attachments/assets/b85c11f8-5627-4e08-b522-b38c4929bcb6" />
 
-**交互式配置：**
+Use your mobile QQ to scan the QR code for facial recognition.
+<img width="2542" height="1272" alt="4" src="https://github.com/user-attachments/assets/d0db5539-56ef-4189-930f-595348892bef" />
 
-```bash
-clawdbot channels add
-# 选择 qqbot，按提示输入 Token
+Once the facial recognition review is approved, you can log in to the QQ Open Platform.
+<img width="2356" height="1308" alt="5" src="https://github.com/user-attachments/assets/c1875b27-fefc-4a1c-81ef-863da8b15ec6" />
+
+## 2. Create a QQ Bot
+
+On the QQ Open Platform's QQ Bot page, you can create a bot.
+<img width="2334" height="1274" alt="6" src="https://github.com/user-attachments/assets/8389c38d-6662-46d0-ae04-92af374b61ef" />
+<img width="2316" height="1258" alt="7" src="https://github.com/user-attachments/assets/15cfe57a-0404-4b02-85fe-42a22cf96d01" />
+
+After the QQ Bot is created, you can select it and click to enter the management page.
+<img width="3002" height="1536" alt="8" src="https://github.com/user-attachments/assets/7c0c7c69-29db-457f-974a-4aa52ebd7973" />
+
+On the QQ Bot management page, obtain the current bot's AppID and AppSecret, copy them, and save them to your personal notepad or memo (please ensure data security and do not leak them). They will be needed later in "Step 3: Configuring OpenClaw".
+
+Note: For security reasons, the QQ Bot's AppSecret is not stored in plain text. If you view it for the first time or forget it, you need to regenerate it.
+<img width="2970" height="1562" alt="9" src="https://github.com/user-attachments/assets/c7fc3094-2840-4780-a202-47b2c2b74e50" />
+<img width="1258" height="594" alt="10" src="https://github.com/user-attachments/assets/4445bede-e7d5-4927-9821-039e7ad8f1f5" />
+
+## 3. Sandbox Configuration
+
+On the QQ Bot's "Development Management" page, in the "Sandbox Configuration" section, set up private chat (select "Configure in Message List").
+
+You can configure this according to your own usage scenario, or you can complete the subsequent steps and then return to this step to operate.
+
+⚠️ Note:
+The QQ Bot created here does not need to be published and made available to all QQ users. It can be used for personal (sandbox) debugging and experience.
+The QQ Open Platform does not support "Configuration in QQ Groups" for bots; it only supports private chat with the QQ Bot.
+<img width="1904" height="801" alt="11" src="https://github.com/user-attachments/assets/f3940a87-aae7-4c89-8f9a-c94fb52cd3ea" />
+
+Note: When selecting "Configure in Message List", you need to first add members, and then use the QQ scan code of that member to add the bot.
+<img width="2582" height="484" alt="12" src="https://github.com/user-attachments/assets/5631fe76-2205-4b1e-b463-75fa3a397464" />
+Note here that after successfully adding a member, you still need to use QQ scan code to add the bot.
+
+<img width="2286" height="1324" alt="13" src="https://github.com/user-attachments/assets/cbf379be-ef6e-4391-8cb1-67c08aad2d43" />
+At this point, after adding the bot to your QQ account, you still cannot have a normal conversation with it. You will receive a prompt saying "The bot has gone to Mars, please try again later." This is because the QQ bot has not yet been connected to the OpenClaw application.
+
+You need to proceed with the following steps to configure the QQ bot's AppID and AppSecret for the OpenClaw application.
+
+<img width="872" height="1052" alt="14" src="https://github.com/user-attachments/assets/0c02aaf6-6cf9-419c-a6ab-36398d73c5ba" />
+
+(Optional) You can also add more members by referring to the previous steps: First, add a new member in the member management page, then add the member in the sandbox configuration page. After that, the new member can add this QQ bot by scanning the QR code with QQ.
+<img width="3006" height="1504" alt="15" src="https://github.com/user-attachments/assets/cecef3a6-0596-4da0-8b92-8d67b8f3cdca" />
+<img width="2902" height="1394" alt="16" src="https://github.com/user-attachments/assets/eb98ffce-490f-402c-8b0c-af7ede1b1303" />
+<img width="1306" height="672" alt="17" src="https://github.com/user-attachments/assets/799056e3-82a6-44bc-9e3d-9c840faafa41" />
+
+# Step 3: Configure OpenClaw
+
+## Method 1: Configure via Wizard (Recommended)
+
+Add the qqbot channel and input the AppID and AppSecret obtained in Step 2.
+
+```
+openclaw channels add --channel qqbot --token "AppID:AppSecret"
 ```
 
-**命令行配置：**
+## Method 2: Configure via Configuration File
 
-```bash
-clawdbot channels add --channel qqbot --token "AppID:AppSecret"
-```
+Edit ~/.openclaw/openclaw.json:
 
-### 3. 手动编辑配置（可选）
-
-编辑 `~/.clawdbot/clawdbot.json`：
-
-```json
+``` json
 {
   "channels": {
     "qqbot": {
       "enabled": true,
-      "appId": "你的AppID",
-      "clientSecret": "你的AppSecret"
+      "appId": "Your AppID",
+      "clientSecret": "Your AppSecret"
     }
   }
 }
 ```
 
----
+# Step 4: Start and Test
 
+## 1. Start the gateway
 
-## 🚀 使用
-
-### 启动服务
-
-```bash
-# 后台启动
-clawdbot gateway restart
-
-# 前台启动（查看日志）
-clawdbot gateway --port 18789 --verbose
+```
+openclaw gateway
 ```
 
-### CLI 配置向导
+## 2. Chat with the QQbot in QQ
 
-```bash
-clawdbot onboard
-# 选择 QQ Bot 进行交互式配置
-```
-
----
-
-## ⚠️ 注意事项
-
-- **群消息**：需要在群内 @机器人 才能触发回复
-- **沙箱模式**：新创建的机器人默认在沙箱模式，需要添加测试用户
-
----
-
-## 🔄 升级
-
-### npm 热更新
-
-```bash
-npx -y @sliverp/qqbot@latest upgrade
-```
-
-> 热更新后无需重新配置 AppId 和 AppSecret。该方式Openclaw和Node.js会占用大量内存，小内存机器优先建议使用源码方式热更新
-
-### 源码热更新
-
-```bash
-git clone https://github.com/sliverp/qqbot.git && cd qqbot 
-
-# 运行升级脚本
-bash ./scripts/upgrade.sh
-
-# 重新安装
-clawdbot plugins install .
-
-# 重新配置
-clawdbot channels add --channel qqbot --token "AppID:AppSecret"
-
-# 重启网关
-clawdbot gateway restart
-```
-
-升级脚本会自动清理旧版本和配置。
+<img width="990" height="984" alt="18" src="https://github.com/user-attachments/assets/b2776c8b-de72-4e37-b34d-e8287ce45de1" />
 
 
-
-
----
-
-## 📚 版本历史
-
-<details>
-<summary><b>v1.4.0</b></summary>
-
-- 支持 Markdown 格式
-
-</details>
-
-<details>
-<summary><b>v1.3.13 - 2026.02.06</b></summary>
-
-- ✨ 支持Openclawd内置指令“/compact" , "/new"等（注意，/reset等命令有危险性，非常不建议把Bot拉入群聊）
-- 🐛 修复在一些情况下”正在输入“不生效的问题
-
-</details>
-
-<details>
-<summary><b>v1.3.0 - 2026.02.03</b></summary>
-
-- ✨ 支持图片收发等功能
-- ✨ 支持定时任务到时后主动推送
-- ✨ 支持使用 npm 等方式安装和升级
-- 🐛 优化一些已知问题
-
-</details>
-
-<details>
-<summary><b>v1.2.5 - 2026.02.02</b></summary>
-
-- ✨ 解除 URL 发送限制
-- ✨ 更新 Bot 正在输入中状态
-- ✨ 提供主动推送能力
-- 🐛 优化一些已知问题
-
-</details>
-
-<details>
-<summary><b>v1.2.2 - 2026.01.31</b></summary>
-
-- ✨ 支持发送文件
-- ✨ 支持 openclaw、moltbot 命令行
-- 🐛 修复 health 检查提示问题
-- 🐛 修复文件发送后 clawdbot 无法读取的问题
-
-</details>
-
-<details>
-<summary><b>v1.2.1</b></summary>
-
-- 🐛 解决长时间使用会断联的问题
-- 🐛 解决频繁重连的问题
-- ✨ 增加大模型调用失败后的提示消息
-
-</details>
-
-<details>
-<summary><b>v1.1.0</b></summary>
-
-- 🐛 解决 URL 被拦截的问题
-- 🐛 解决多轮消息发送失败的问题
-- 🐛 修复部分图片无法接收的问题
-- ✨ 增加支持 onboard 配置方式
-
-</details>
-
----
-
-## 🔗 相关链接
-
-- [QQ 机器人官方文档](https://bot.q.qq.com/wiki/)
-- [QQ 开放平台](https://q.qq.com/)
-- [API v2 文档](https://bot.q.qq.com/wiki/develop/api-v2/)
-
----
-
-## 📄 License
-
-MIT
+# Other Language README
+[简体中文](README.zh.md)
