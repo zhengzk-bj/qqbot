@@ -52,21 +52,32 @@ echo "========================================="
 
 # 1. 移除老版本
 echo ""
-echo "[1/4] 移除老版本..."
+echo "[1/5] 移除老版本..."
 if [ -f "./scripts/upgrade.sh" ]; then
     bash ./scripts/upgrade.sh
 else
     echo "警告: upgrade.sh 不存在，跳过移除步骤"
 fi
 
-# 2. 安装当前版本
+# 2. 编译 TypeScript 代码
 echo ""
-echo "[2/4] 安装当前版本..."
+echo "[2/5] 编译 TypeScript 代码..."
+if command -v npm &> /dev/null; then
+    npm run build
+    echo "✓ 编译完成"
+else
+    echo "❌ 错误: 未找到 npm 命令"
+    exit 1
+fi
+
+# 3. 安装当前版本
+echo ""
+echo "[3/5] 安装当前版本..."
 openclaw plugins install .
 
-# 3. 配置机器人通道
+# 4. 配置机器人通道
 echo ""
-echo "[3/4] 配置机器人通道..."
+echo "[4/5] 配置机器人通道..."
 
 # 构建 token（如果提供了 appid 和 secret）
 if [ -n "$APPID" ] && [ -n "$SECRET" ]; then
@@ -82,8 +93,8 @@ openclaw channels add --channel qqbot --token "$QQBOT_TOKEN"
 # 启用 markdown 支持
 openclaw config set channels.qqbot.markdownSupport true
 
-# 4. 启动 openclaw
+# 5. 启动 openclaw
 echo ""
-echo "[4/4] 启动 openclaw..."
+echo "[5/5] 启动 openclaw..."
 echo "========================================="
 openclaw gateway --verbose

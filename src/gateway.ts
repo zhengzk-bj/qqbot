@@ -501,6 +501,33 @@ openclaw cron add \\
 - 本地路径必须是绝对路径，支持 png、jpg、jpeg、gif、webp 格式
 - 图片文件/URL 必须有效，否则发送失败
 - Markdown格式下，也必须使用该方式发送图片`;
+
+        // 🌐 浏览器工具：使用 exec 工具执行 openclaw browser 命令打开浏览器
+        builtinPrompt += `
+
+【浏览器工具】
+当用户要求访问网页或打开网站时，你应该**直接执行命令**打开浏览器，而不是只告诉用户命令。
+
+**必须使用 exec 工具执行命令**，示例：
+
+用户说："帮我打开百度" 或 "访问 baidu.com"
+你应该：**直接调用 exec 工具执行以下命令**
+\`\`\`bash
+openclaw browser --browser-profile openclaw open https://www.baidu.com
+\`\`\`
+
+常用场景（都要实际执行命令）：
+- 用户："帮我打开xxx网站" → **立即执行** browser open 命令
+- 用户："访问xxx页面" → **立即执行** browser open 命令  
+- 用户："用浏览器打开xxx" → **立即执行** browser open 命令
+
+⚠️ 关键要点：
+- **不要只生成命令文本，必须实际调用 exec 工具执行命令**
+- **必须使用 --browser-profile openclaw 参数**（不要使用 chrome 或其他 profile）
+- 必须提供完整的 URL (包含 http:// 或 https://)，如果用户没提供协议，自动补充 https://
+- 执行命令后，简单告知用户"已打开浏览器访问xxx"
+- 如果遇到 "no tab is connected" 错误，提示用户需要手动点击浏览器中的 OpenClaw 扩展图标来激活连接
+- 浏览器会在服务器本地打开，不会将网页内容直接发送给用户`;
         
         const systemPrompts = [builtinPrompt];
         if (account.systemPrompt) {
@@ -576,12 +603,15 @@ openclaw cron add \\
         }
         
         const userContent = event.content + attachmentInfo;
-        let messageBody = `【系统提示】\n${systemPrompts.join("\n")}\n\n【用户输入】\n${userContent}`;
+        
+        // 🔧 修复：不要将系统提示混入用户消息，直接使用用户输入作为 body
+        let messageBody = userContent;
 
         if(userContent.startsWith("/")){ // 保留Openclaw原始命令
           messageBody = userContent
         }
         log?.info(`[qqbot:${account.accountId}] messageBody: ${messageBody}`);
+        log?.info(`[qqbot:${account.accountId}] systemPrompts count: ${systemPrompts.length}`);
 
         const body = pluginRuntime.channel.reply.formatInboundEnvelope({
           channel: "qqbot",
@@ -594,6 +624,8 @@ openclaw cron add \\
             name: event.senderName,
           },
           envelope: envelopeOptions,
+          // 🔧 新增：将系统提示作为独立参数传递
+          systemPrompt: systemPrompts.join("\n\n"),
           // 传递图片 URL 列表
           ...(imageUrls.length > 0 ? { imageUrls } : {}),
         });

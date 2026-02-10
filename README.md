@@ -1,8 +1,24 @@
-# QQ
+# QQ Bot for OpenClaw
 
 QQ is a widely-used instant messaging platform that provides various communication capabilities such as text, voice, images, and files. It supports collaborative scenarios like group chats and channels, making it suitable for both personal communication and team collaboration.
 
 This integration method connects OpenClaw with a QQ Bot. It utilizes the platform's long-connection event subscription mechanism to receive message and event callbacks, enabling stable and secure message exchange and automation capability integration without exposing a public webhook address.
+
+## 📚 Documentation
+
+- **Setup Guide**: See below for QQ Bot setup instructions
+- **[Image Sending Guide](docs/IMAGE_ADAPTER_GUIDE.md)**: How to adapt image sending for other platforms (English)
+- **[图片适配指南](docs/IMAGE_ADAPTER_GUIDE.zh.md)**: 如何为其他聊天平台适配图片发送功能（中文）
+
+## ✨ Features
+
+- ✅ Text message support (private chat & group chat)
+- ✅ **Image sending** with `<qqimg>` tags (local files auto-converted to Base64)
+- ✅ Scheduled reminders via cron integration
+- ✅ Browser automation integration
+- ✅ Markdown format support
+- ✅ Input status notifications
+- ✅ Passive & proactive message modes
 
 # Step 1: Install the QQ Bot Plugin
 
